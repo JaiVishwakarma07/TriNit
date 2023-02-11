@@ -2,6 +2,7 @@
 import express from "express"
 import mysql from "mysql"
 import cors from "cors"
+import jwt from 'jsonwebtoken'
 const app = express()
 
 // const mongoose = require("mongoose")
@@ -36,6 +37,18 @@ app.get("/ngos/ngo/:name", (req, res) => {
 
   const ngoname = req.params.name;
   const q = "SELECT * FROM ngo WHERE name = ?"
+  db.query(q, [ngoname], (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+
+//select ngos from field
+
+app.get("/ngos/ngo/:name", (req, res) => {
+
+  const ngoname = req.params.name;
+  const q = "SELECT * FROM ngo WHERE field = ?"
   db.query(q, [ngoname], (err, data) => {
     if (err) return res.json(err)
     return res.json(data)
@@ -85,6 +98,35 @@ app.post("/phil", (req, res) => {
   db.query(q, [values], (err, data) => {
     if (err) return res.json(err)
     return res.json("data has been added created")
+  })
+})
+
+// Login Route
+app.post('/login', (req, res) => {
+  const { name, password, type } = req.body;
+  let q;
+  if (type === 'NGO') {
+    q = "SELECT * FROM ngo WHERE name = ? AND password = ?"
+  } else {
+    q = "SELECT * FROM phalin WHERE name = ? AND password = ?"
+  }
+  db.query(q, [name, password], (err, data) => {
+    if (err) return res.json(err)
+    jwt.sign({
+      id: data[0].id,
+      name: data[0].name,
+      type: type
+    }, 'secret', (err, token) => {
+      if (err) return res.json({ msg: "Error in JWT" })
+      return res.json({
+        user: {
+          id: data[0].id,
+          name: data[0].name,
+          type: type
+        },
+        token
+      })
+    });
   })
 })
 
