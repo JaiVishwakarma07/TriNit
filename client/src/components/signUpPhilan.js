@@ -13,6 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { useNavigate } from "react-router-dom"
 
 const theme = createTheme()
 
@@ -20,12 +21,14 @@ export default function SignUp() {
   const [userInfo, setUserInfo] = React.useState({
     name: "",
     photo: "",
-    organization: "",
+    orgnisation: "",
     location: "",
     interest: "",
     funds: "",
     password: "",
   })
+
+  const navigate = useNavigate()
 
   const handleOnChange = (e) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value })
@@ -33,13 +36,15 @@ export default function SignUp() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    // console.log(userInfo)
     axios({
       method: "post",
       url: "http://localhost:5000/phil",
       data: userInfo,
     })
       .then((data) => {
-        localStorage.setItem("TRI_NIT", JSON.stringify(data))
+        navigate("/")
+        //localStorage.setItem("TRI_NIT", JSON.stringify(data))
       })
       .catch((err) => console.log(err))
   }
@@ -97,7 +102,7 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  name="organization"
+                  name="orgnisation"
                   label="Organization"
                   type="text"
                   id="organization"

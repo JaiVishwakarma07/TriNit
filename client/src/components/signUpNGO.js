@@ -85,7 +85,7 @@ export default function SignUpNGO() {
                             <Grid item xs={12}>
                                 <TextField
                                     autoComplete="given-name"
-                                    name="firstName"
+                                    name="name"
                                     required
                                     fullWidth
                                     id="firstName"
