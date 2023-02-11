@@ -29,11 +29,10 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(loginCred.name)
-    console.log(loginCred.password)
     axios({
       method: "post",
       url: "http://localhost:5000/login",
+
       data: {
         type: "NGO", // TODO: Update
         name: loginCred.name,
