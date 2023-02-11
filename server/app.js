@@ -2,7 +2,7 @@
 import express from "express"
 import mysql from "mysql"
 import cors from "cors"
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken"
 const app = express()
 
 // const mongoose = require("mongoose")
@@ -14,7 +14,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "trinit"
+  database: "trinit",
 })
 
 app.use(express.json())
@@ -32,10 +32,9 @@ app.get("/ngos", (req, res) => {
   })
 })
 
-//select ngos from name 
+//select ngos from name
 app.get("/ngos/ngo/:name", (req, res) => {
-
-  const ngoname = req.params.name;
+  const ngoname = req.params.name
   const q = "SELECT * FROM ngo WHERE name = ?"
   db.query(q, [ngoname], (err, data) => {
     if (err) return res.json(err)
@@ -45,9 +44,8 @@ app.get("/ngos/ngo/:name", (req, res) => {
 
 //select ngos from field
 
-app.get("/ngos/ngo/:name", (req, res) => {
-
-  const ngoname = req.params.name;
+app.get("/ngos/ngo/:field", (req, res) => {
+  const ngoname = req.params.field
   const q = "SELECT * FROM ngo WHERE field = ?"
   db.query(q, [ngoname], (err, data) => {
     if (err) return res.json(err)
@@ -57,7 +55,8 @@ app.get("/ngos/ngo/:name", (req, res) => {
 
 //add ngo
 app.post("/ngos", (req, res) => {
-  const q = "INSERT INTO ngo (`name`,`location`,`password`,`workingarea`,`field`,`funding`,`GSTIN`,`photo`) VALUES (?)";
+  const q =
+    "INSERT INTO ngo (`name`,`location`,`password`,`workingarea`,`field`,`funding`,`GSTIN`,`photo`) VALUES (?)"
   const values = [
     req.body.name,
     req.body.location,
@@ -67,7 +66,7 @@ app.post("/ngos", (req, res) => {
     req.body.funding,
     req.body.GSTIN,
     req.body.photo,
-  ];
+  ]
   db.query(q, [values], (err, data) => {
     if (err) return res.json(err)
     return res.json("data has been added created")
@@ -85,7 +84,8 @@ app.get("/phil", (req, res) => {
 
 //add philan
 app.post("/phil", (req, res) => {
-  const q = "INSERT INTO phalin (`name`,`orgnisation`,`location`,`interest`,`funds`,`photo`,`password`) VALUES (?)";
+  const q =
+    "INSERT INTO phalin (`name`,`orgnisation`,`location`,`interest`,`funds`,`photo`,`password`) VALUES (?)"
   const values = [
     req.body.name,
     req.body.orgnisation,
@@ -93,8 +93,8 @@ app.post("/phil", (req, res) => {
     req.body.interest,
     req.body.funds,
     req.body.photo,
-    req.body.password
-  ];
+    req.body.password,
+  ]
   db.query(q, [values], (err, data) => {
     if (err) return res.json(err)
     return res.json("data has been added created")
@@ -102,34 +102,37 @@ app.post("/phil", (req, res) => {
 })
 
 // Login Route
-app.post('/login', (req, res) => {
-  const { name, password, type } = req.body;
-  let q;
-  if (type === 'NGO') {
+app.post("/login", (req, res) => {
+  const { name, password, type } = req.body
+  let q
+  if (type === "NGO") {
     q = "SELECT * FROM ngo WHERE name = ? AND password = ?"
   } else {
     q = "SELECT * FROM phalin WHERE name = ? AND password = ?"
   }
   db.query(q, [name, password], (err, data) => {
     if (err) return res.json(err)
-    jwt.sign({
-      id: data[0].id,
-      name: data[0].name,
-      type: type
-    }, 'secret', (err, token) => {
-      if (err) return res.json({ msg: "Error in JWT" })
-      return res.json({
-        user: {
-          id: data[0].id,
-          name: data[0].name,
-          type: type
-        },
-        token
-      })
-    });
+    jwt.sign(
+      {
+        id: data[0].id,
+        name: data[0].name,
+        type: type,
+      },
+      "secret",
+      (err, token) => {
+        if (err) return res.json({ msg: "Error in JWT" })
+        return res.json({
+          user: {
+            id: data[0].id,
+            name: data[0].name,
+            type: type,
+          },
+          token,
+        })
+      }
+    )
   })
 })
-
 
 app.listen(5000, () => {
   console.log("Running at 5000")
