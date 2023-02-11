@@ -33,11 +33,11 @@ const SignIn = () => {
     console.log(loginCred.password)
     axios({
       method: "post",
-      url: "/user/12345",
+      url: "http://localhost:5000/login",
       data: {
         type: "NGO", // TODO: Update
         name: loginCred.name,
-        password: loginCred.name,
+        password: loginCred.password,
       },
     })
       .then((data) => {
